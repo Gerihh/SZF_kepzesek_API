@@ -22,7 +22,7 @@ exports.getTraining = async (req, res, next) => {
     }
     res.status(200).json({ success: true, data: training });
   } catch (error) {
-    res.status(400).json({ success: false });
+    next(error)
   }
 }; // @desc   Create new training
 // @route  POST /api/trainings
