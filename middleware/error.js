@@ -1,9 +1,17 @@
-const errorHandler = (err, req, res, next) => {
-    console.log(err.stack);
-    res.status(500).json({
-        success: false,
-        error: err.message
-    })
-}
+const ErrorResponse = require("../utils/errorResponse");
 
-module.exports = errorHandler
+const errorHandler = (err, req, res, next) => {
+  console.log(err.stack);
+
+  if (err.code === 11000) {
+    const message = "Duplicate field value";
+    err = new ErrorResponse(message, 400);
+  }
+
+  res.status(err.statusCode || 500).json({
+    success: false,
+    error: err.message || "Server Error",
+  });
+};
+
+module.exports = errorHandler;

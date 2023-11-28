@@ -1,4 +1,6 @@
 const Training = require("../models/Training");
+const ErrorResponse = require('../utils/errorResponse');
+
 // @desc   Get all trainings
 // @route  GET /api/trainings
 // @access Public
@@ -9,7 +11,7 @@ exports.getTrainings = async (req, res, next) => {
       .status(200)
       .json({ success: true, count: trainings.length, data: trainings });
   } catch (error) {
-    res.status(400).json({ success: false });
+    next(new ErrorResponse(400));
   }
 }; // @desc   Get single training
 // @route  GET /api/trainings/:id
@@ -22,7 +24,7 @@ exports.getTraining = async (req, res, next) => {
     }
     res.status(200).json({ success: true, data: training });
   } catch (error) {
-    next(error)
+    next(new ErrorResponse(`Course id (${req.params.id}) is not correct`, 404));
   }
 }; // @desc   Create new training
 // @route  POST /api/trainings
@@ -32,7 +34,7 @@ exports.createTraining = async (req, res, next) => {
     const training = await Training.create(req.body);
     res.status(201).json({ success: true, data: training });
   } catch (error) {
-    res.status(400).json({ success: false });
+    next(error);
   }
 };
 // @desc   Update training
@@ -49,7 +51,7 @@ exports.updateTraining = async (req, res, next) => {
     }
     res.status(200).json({ success: true, data: training });
   } catch (error) {
-    res.status(400).json({ success: false });
+    next(new ErrorResponse(`Course id (${req.params.id}) is not correct`, 404))
   }
 }; // @desc   Delete training
 // @route  DELETE /api/trainings/:id
@@ -62,6 +64,6 @@ exports.deleteTraining = async (req, res, next) => {
     }
     res.status(200).json({ success: true, data: {} });
   } catch (error) {
-    res.status(400).json({ success: false });
+    next(new ErrorResponse(`Course id (${req.params.id}) is not correct`, 404))
   }
 };
